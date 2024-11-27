@@ -1,0 +1,46 @@
+{
+  "name": "lovesurprise",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prod": "next start -p 3000"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.0.18",
+    "@stripe/react-stripe-js": "^3.0.0",
+    "@stripe/stripe-js": "^5.2.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.46.1",
+    "@types/node": "20.6.2",
+    "@types/react": "18.2.22",
+    "@types/react-dom": "18.2.7",
+    "autoprefixer": "10.4.15",
+    "clsx": "^2.0.0",
+    "date-fns": "^4.1.0",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.5.1",
+    "framer-motion": "^10.16.4",
+    "next": "13.5.1",
+    "postcss": "8.4.30",
+    "qrcode": "^1.5.4",
+    "qrcode.react": "^4.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "react-intersection-observer": "^9.5.2",
+    "stripe": "^17.4.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.2.2",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "supabase": "^1.223.10"
+  }
+}

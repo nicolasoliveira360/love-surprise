@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/manage-surprises",
+      "schedule": "0 0 * * *"
+    }
+  ]
+} 

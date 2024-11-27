@@ -1,0 +1,7 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "/var/www/lovesurprise/current/deploy.sh",
+    "command-working-directory": "/var/www/lovesurprise/current"
+  }
+] 
