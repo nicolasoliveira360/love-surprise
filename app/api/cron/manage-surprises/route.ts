@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { PLANS } from '@/constants/plans';
 
 export async function GET() {
   try {
+    // Verificar se as variáveis de ambiente estão configuradas
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error('Supabase environment variables missing');
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Configuration error' 
+      }, { status: 500 });
+    }
+
     // 1. Excluir surpresas não pagas após 3 dias
     const threeDaysAgo = new Date();
     threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
@@ -14,7 +22,10 @@ export async function GET() {
       .eq('status', 'draft')
       .lt('created_at', threeDaysAgo.toISOString());
 
-    if (deleteError) throw deleteError;
+    if (deleteError) {
+      console.error('Error deleting drafts:', deleteError);
+      throw deleteError;
+    }
 
     // 2. Expirar surpresas básicas após 30 dias
     const thirtyDaysAgo = new Date();
@@ -27,7 +38,10 @@ export async function GET() {
       .eq('status', 'active')
       .lt('created_at', thirtyDaysAgo.toISOString());
 
-    if (expireError) throw expireError;
+    if (expireError) {
+      console.error('Error expiring surprises:', expireError);
+      throw expireError;
+    }
 
     return NextResponse.json({ 
       success: true,

@@ -40,8 +40,8 @@ export default function Preview() {
   const handleSaveAndContinue = async () => {
     try {
       // Verificar autenticação primeiro
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         if (tempSurprise) {
           try {
             const serializableSurprise = {
@@ -78,7 +78,7 @@ export default function Preview() {
         message: tempSurprise.message,
         youtubeLink: tempSurprise.youtubeLink || '',
         plan: tempSurprise.plan || 'basic',
-        photos: tempSurprise.photos,
+        photos: tempSurprise.photos || [],
         status: 'draft'
       });
 

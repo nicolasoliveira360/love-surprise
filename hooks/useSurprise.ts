@@ -179,8 +179,8 @@ export function useSurprise() {
       setError(null);
 
       // Verificar autenticação
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user?.id) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.id) {
         throw new Error('Usuário não autenticado');
       }
 
@@ -193,26 +193,13 @@ export function useSurprise() {
       const photoUrls: string[] = [];
       if (data.photos && data.photos.length > 0) {
         const uploadPromises = data.photos.map(async (file, index) => {
-          const fileName = `${surpriseId}/${Date.now()}-${index}.jpg`;
-          console.log('Iniciando upload da foto', index + 1, ':', {
-            fileName,
-            type: file.type,
-            size: file.size
-          });
-
-          const { error: uploadError, data: uploadData } = await supabase.storage
-            .from('surprise_photos')
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
-
-          const photoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/surprise_photos/${fileName}`;
-          console.log(`Foto ${index + 1} enviada com sucesso:`, photoUrl);
-          return { url: photoUrl, index };
+          const result = await uploadPhoto(file, surpriseId, index);
+          if (!result) throw new Error(`Falha no upload da foto ${index + 1}`);
+          return result.photo_url;
         });
 
         const results = await Promise.all(uploadPromises);
-        photoUrls.push(...results.map(r => r.url));
+        photoUrls.push(...results);
       }
 
       // Criar a surpresa no banco
@@ -220,13 +207,13 @@ export function useSurprise() {
         .from('surprises')
         .insert({
           id: surpriseId,
-          user_id: user.id, // Usar o ID verificado
+          user_id: user.id,
           couple_name: data.coupleName,
           start_date: data.startDate,
           message: data.message,
           youtube_link: data.youtubeLink,
           plan: data.plan,
-          status: data.status
+          status: data.status || 'draft'
         })
         .select()
         .single();
@@ -234,6 +221,10 @@ export function useSurprise() {
       if (createError) {
         console.error('Erro ao criar surpresa:', createError);
         throw createError;
+      }
+
+      if (!surprise) {
+        throw new Error('Erro ao criar surpresa: resposta vazia do servidor');
       }
 
       // Se houver fotos, criar as referências
